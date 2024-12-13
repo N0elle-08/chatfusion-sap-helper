@@ -9,7 +9,7 @@ interface ChatButtonProps {
 const ChatButton = ({ onClick, isOpen }: ChatButtonProps) => {
   return (
     <Button
-      className={`fixed bottom-4 right-4 w-14 h-14 rounded-full bg-sap-blue hover:bg-sap-accent transition-all duration-300 shadow-lg ${
+      className={`fixed bottom-4 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 shadow-lg ${
         isOpen ? "opacity-0 pointer-events-none scale-90" : "opacity-100 scale-100"
       }`}
       onClick={onClick}

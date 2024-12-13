@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send } from "lucide-react";
+import { X, Send, Image, FileText, BarChart2, Code, HelpCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useToast } from "./ui/use-toast";
@@ -47,11 +47,10 @@ const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
 
     try {
       // Here you would typically make an API call to your SAP CAP backend
-      // For now, we'll simulate a response
       setTimeout(() => {
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: "Thank you for your message. This is a demo response from the SAP chatbot.",
+          text: "What can I help you with?",
           sender: "bot",
           timestamp: new Date(),
         };
@@ -75,22 +74,27 @@ const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
     }
   };
 
+  const actions = [
+    { icon: <Image className="w-4 h-4" />, label: "Create image" },
+    { icon: <FileText className="w-4 h-4" />, label: "Summarize text" },
+    { icon: <BarChart2 className="w-4 h-4" />, label: "Analyze data" },
+    { icon: <Code className="w-4 h-4" />, label: "Code" },
+    { icon: <HelpCircle className="w-4 h-4" />, label: "Get advice" },
+  ];
+
   return (
     <div
-      className={`fixed bottom-4 right-4 w-[400px] h-[600px] bg-white rounded-lg shadow-2xl flex flex-col transition-all duration-300 ease-in-out ${
+      className={`fixed bottom-4 right-4 w-[400px] h-[600px] bg-[#1A1F2C] rounded-lg shadow-2xl flex flex-col transition-all duration-300 ease-in-out ${
         isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-sap-border bg-sap-blue rounded-t-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-          <h2 className="text-lg font-semibold text-white">SAP Assistant</h2>
-        </div>
+      <div className="flex items-center justify-between px-6 py-4">
+        <h2 className="text-2xl font-semibold text-white">What can I help with?</h2>
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-sap-accent/20"
+          className="text-white hover:bg-white/10"
           onClick={onClose}
         >
           <X className="h-5 w-5" />
@@ -98,7 +102,7 @@ const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -107,10 +111,10 @@ const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
             }`}
           >
             <div
-              className={`max-w-[80%] p-3 rounded-2xl shadow-sm ${
+              className={`max-w-[80%] p-3 rounded-2xl ${
                 message.sender === "user"
-                  ? "bg-sap-blue text-white"
-                  : "bg-white text-sap-text"
+                  ? "bg-blue-600 text-white"
+                  : "bg-[#2A2F3C] text-white"
               }`}
             >
               {message.text}
@@ -119,7 +123,7 @@ const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white text-sap-text p-3 rounded-2xl shadow-sm animate-pulse">
+            <div className="bg-[#2A2F3C] text-white p-3 rounded-2xl animate-pulse">
               Typing...
             </div>
           </div>
@@ -127,21 +131,37 @@ const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Action Buttons */}
+      <div className="px-6 py-4 grid grid-cols-2 gap-2">
+        {actions.map((action, index) => (
+          <Button
+            key={index}
+            variant="ghost"
+            className="flex items-center gap-2 justify-start text-white hover:bg-white/10 px-4 py-2 h-auto"
+          >
+            <div className="p-2 rounded-full bg-white/10">
+              {action.icon}
+            </div>
+            {action.label}
+          </Button>
+        ))}
+      </div>
+
       {/* Input */}
-      <div className="p-4 border-t border-sap-border bg-white rounded-b-lg">
+      <div className="p-4">
         <div className="flex gap-2">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type your message..."
-            className="flex-1 focus-visible:ring-sap-blue"
+            placeholder="Message Claude..."
+            className="flex-1 bg-[#2A2F3C] border-none text-white placeholder:text-gray-400"
             disabled={isLoading}
           />
           <Button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="bg-sap-blue hover:bg-sap-accent transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             <Send className="h-5 w-5" />
           </Button>
